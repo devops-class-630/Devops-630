@@ -1,38 +1,18 @@
-## This is Devops Lab Project
-Setting up git repository
-```bash
-git init
-```
-To add files
-```git add filenae
-```
-or 
-```bash
-git add .
-```
+# Next Markdown Blog
 
+Simple static blog using markdown and Next.js
 
-### To add origin by rabin
-```bash
-git remote add origin <origin url>
-```
+[DEMO](https://next-markdown-blog-drab.vercel.app/)
 
-### To add changes by rabin
-```bash
-edit file by rabin
-```
+## Usage
 
-### To add changes by rabin
 ```bash
-edit2 file by rabin
-```
+# Install dependencies
+npm install
 
-### To add gpg-key changes by rabin
-```bash
-Add GPG key
-```
+# Run dev server
+npm run dev
 
-### To add gpg-key changes by rabin
-```bash
-Add new GPG key
+# Build for prod and export static website
+npm run build
 ```
