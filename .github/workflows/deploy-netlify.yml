@@ -10,7 +10,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    environment: develop
+    environment: ci/add-cicd-deepak
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
