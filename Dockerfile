@@ -1,4 +1,4 @@
 
 FROM ubuntu:latest
-ENTRYPOINT ["/usr/bin/ls"]
+ENTRYPOINT ["/usr/bin/ls", "-la"]
 

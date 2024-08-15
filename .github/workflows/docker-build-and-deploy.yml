@@ -8,11 +8,10 @@ on:
 jobs:
   build:
     runs-on: ubunut-latest
-
-  steps:
-    - name: checkout repository
-      uses: actions/checkout@v2
-    - name: Docker build
-      run: |
-        echo "BUild DOcker Images"
-        docker build -t docker push rabindangolrd/entvscmd:tagname .
+    steps:
+      - name: checkout repository
+        uses: actions/checkout@v2
+      - name: Docker build
+        run: |
+          echo "BUild DOcker Images"
+          docker build -t docker push rabindangolrd/entvscmd:tagname .
