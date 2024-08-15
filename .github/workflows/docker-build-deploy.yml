@@ -7,7 +7,7 @@ on:
       - develop
       - ci/add-cicd-raju
 jobs:
-  build:
+  docker_build_push:
     runs-on: ubuntu-latest
     environment: ci/add-cicd-raju
     steps:
@@ -22,3 +22,5 @@ jobs:
         with:
           username: ${{ vars.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Push Images
+        run: docker push ${{ vars.DOCKERHUB_USERNAME }}/docker_lab_630
