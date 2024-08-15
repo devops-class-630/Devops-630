@@ -22,4 +22,4 @@ jobs:
           username: ${{ vars.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       - name: Push Images
-        run: docker push ${{ vars.DOCKERHUB_USERNAME }}/rabindangolrd/entvscmd
+        run: docker push ${{ vars.DOCKERHUB_USERNAME }}/entvscmd
