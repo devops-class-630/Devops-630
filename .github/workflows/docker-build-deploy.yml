@@ -1,0 +1,24 @@
+name: "Docker build and deploy"
+
+
+on:
+ push:
+   branches:
+   - "main"
+   - "develop"
+   - "cicd/deepak"
+
+
+jobs:
+ build:
+   runs-on: ubuntu-latest
+   steps:
+     - name: Checkout repository
+       uses: actions/checkout@v2
+     - name: Docker build
+       run: |
+         echo "Building Docker images"
+         docker built -t dpaktamang/dockerlab630 .
+
+
+   
