@@ -23,7 +23,7 @@ jobs:
          username: ${{ vars.DOCKERHUB_USERNAME }}
          password: ${{ secrets.DOCKERHUB_TOKEN }}   
      - name: Push Images
-       run: docker push ${{ vars.DOCKERHUB_USERNAME }}/dockerlabaug 
+       run: docker push sabin30/dockerlabaug 
 
 
    
