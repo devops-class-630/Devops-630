@@ -1,13 +1,10 @@
 name: "Docker build and deploy"
-
-
 on:
  push:
    branches:
    - "main"
    - "develop"
    - "ci/add-cicd-sabin"
-
 
 jobs:
  build:
