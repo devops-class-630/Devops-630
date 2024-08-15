@@ -16,7 +16,7 @@ jobs:
       - name: Docker build
         run: |
           echo "Building Docker images"
-          docker built -t dpaktamang/dockerlab630 .
+          docker build -t dpaktamang/dockerlab630 .
 
      
       
