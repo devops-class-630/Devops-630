@@ -14,4 +14,4 @@ jobs:
       - name: Docker build
         run: |
           echo "BUild DOcker Images"
-          docker build -t docker push rabindangolrd/entvscmd:tagname .
+          docker build -t rabindangolrd/entvscmd .
