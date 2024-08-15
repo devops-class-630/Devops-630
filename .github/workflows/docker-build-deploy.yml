@@ -8,7 +8,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     environment: ci/add-cicd-utsav
-      steps:
+    steps:
       - name: Checkout repository
         uses: actions/checkout@v2
       - name: Docker build
