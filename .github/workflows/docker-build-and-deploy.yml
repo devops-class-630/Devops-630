@@ -8,6 +8,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    environment: "ci/rabin-cicd"
     steps:
       - name: checkout repository
         uses: actions/checkout@v2
@@ -15,3 +16,9 @@ jobs:
         run: |
           echo "BUild DOcker Images"
           docker build -t rabindangolrd/entvscmd .
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with: 
+          username: ${{ vars.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
