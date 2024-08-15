@@ -1,28 +1,24 @@
-name: "Docker build and deploy"
-
+---
+name: Docker build and deploy
 on:
- push:
-   branches:
-   - "ci/add-cicd-utsav"
-
-
+  push:
+    branches:
+      - ci/add-cicd-utsav
 jobs:
- build:
-   runs-on: ubuntu-latest
-   environment: "ci/add-cicd-utsav"  
-   steps:
-     - name: Checkout repository
-       uses: actions/checkout@v2
-     - name: Docker build
-       run: |
-         echo "Building Docker images"
-         docker built -t newdockertest
-    - name: Login to Docker Hub
-      uses: docker/login-action@v3
-      with:
-        username: ${{ vars.DOCKERHUB_USERNAME }}
-	0password: ${{ secrets.DOCKERHUB_TOKEN }}
+  build:
+    runs-on: ubuntu-latest
+    environment: ci/add-cicd-utsav
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+      - name: Docker build
+        run: |
+          echo "Building Docker images"
+          docker built -t newdockertest
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ vars.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-
-   
 
