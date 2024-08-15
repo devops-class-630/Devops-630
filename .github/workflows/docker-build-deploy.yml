@@ -21,9 +21,9 @@ jobs:
        uses: docker/login-action@v3
        with:
          username: ${{ vars.DOCKERHUB_USERNAME }}
-	 password: ${{ secrets.DOCKERHUB_TOKEN }}    
+	 password: ${{ secrets.DOCKERHUB_TOKEN }}   
      - name: Push Images
-       run: docker push ${{ vars.DOCKERHUB_USERNAME }}/dockerlabaug     
+       run: docker push ${{ vars.DOCKERHUB_USERNAME }}/dockerlab630    
 
 
    
