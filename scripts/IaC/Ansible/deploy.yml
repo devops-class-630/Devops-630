@@ -2,7 +2,7 @@
 - name: Install MyApp on Ubuntu
   hosts: all
   remote_user: deepak
-  gather_facts: no
+  gather_facts: yes
   become: true
   vars:
     IMAGE: "docker/dockerlab630"
