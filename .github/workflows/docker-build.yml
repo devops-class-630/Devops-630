@@ -24,3 +24,29 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       - name: Push Images
         run: docker push ${{ vars.DOCKERHUB_USERNAME }}/dockerlab630
+  deploy:
+    runs-on: ubuntu-latest
+    environment: cicd/deepak
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+        
+      - name: Set up SSH key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan github.com >> ~/.ssh/known_hosts
+
+      - name: Install Ansible
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y python3-pip
+          pip3 install ansible
+
+      - name: Deploy with Ansible
+        working-directory: ./scripts/IaC/ansible
+        run: |
+          ansible-playbook -i ${{ vars.ANSIBLE_NODE }}, deploy.yml
+        env:
+          ANSIBLE_HOST_KEY_CHECKING: 'False'
