@@ -44,10 +44,12 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y python3-pip
           pip3 install ansible
+      - name: Ansible ssh connection check
+        run: ssh -o StrictHostKeyChecking=no ~/.ssh/id_rsa deepak@${{ vars.ANSIBLE_NODE }}
 
       - name: Deploy with Ansible
         working-directory: ./scripts/IaC/Ansible
         run: |
-          ansible-playbook -i ${{ vars.ANSIBLE_NODE }}, deploy.yml
+          ansible-playbook -v -i ${{ vars.ANSIBLE_NODE }}, deploy.yml
         env:
           ANSIBLE_HOST_KEY_CHECKING: 'False'
