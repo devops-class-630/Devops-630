@@ -27,10 +27,11 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     environment: cicd/deepak
+    needs: docker_build_push
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
-        
+
       - name: Set up SSH key
         run: |
           mkdir -p ~/.ssh
