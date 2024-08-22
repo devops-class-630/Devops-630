@@ -46,7 +46,7 @@ jobs:
           pip3 install ansible
 
       - name: Deploy with Ansible
-        working-directory: ./scripts/IaC/ansible
+        working-directory: ./scripts/IaC/Ansible
         run: |
           ansible-playbook -i ${{ vars.ANSIBLE_NODE }}, deploy.yml
         env:
