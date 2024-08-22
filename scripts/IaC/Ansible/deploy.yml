@@ -1,7 +1,7 @@
 ---
 - name: Install MyApp on Ubuntu
   hosts: all
-  remote_user: d
+  remote_user: deepak
   gather_facts: no
   become: true
   vars:
