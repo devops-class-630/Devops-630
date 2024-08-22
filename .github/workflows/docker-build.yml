@@ -35,8 +35,8 @@ jobs:
       - name: Set up SSH key
         run: |
           mkdir -p ~/.ssh
-          echo "${{ secrets.SSH_KEY }}" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
+          echo "${{ secrets.SSH_KEY }}" > ~/ansible_ssh_key
+          chmod 600 ~/ansible_ssh_key
           ssh-keyscan github.com >> ~/.ssh/known_hosts
 
       - name: Install Ansible
@@ -45,11 +45,11 @@ jobs:
           sudo apt-get install -y python3-pip
           pip3 install ansible
       - name: Ansible ssh connection check
-        run: ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa deepak@${{ vars.ANSIBLE_NODE }}
+        run: ssh -o StrictHostKeyChecking=no -i ~/ansible_ssh_key deepak@${{ vars.ANSIBLE_NODE }}
 
       - name: Deploy with Ansible
         working-directory: ./scripts/IaC/Ansible
         run: |
-          ansible-playbook -v -i ${{ vars.ANSIBLE_NODE }}, deploy.yml
+          ansible-playbook -v -i ${{ vars.ANSIBLE_NODE }}, deploy.yml --private-keys ~/ansible_ssh_key --user deepak
         env:
           ANSIBLE_HOST_KEY_CHECKING: 'False'
