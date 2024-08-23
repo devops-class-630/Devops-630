@@ -27,7 +27,7 @@ jobs:
   ansible:
     runs-on: ubuntu-latest
     environment: ci/rabin-cicd
-    needs: docker_build_push
+    needs: build
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
