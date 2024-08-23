@@ -23,3 +23,33 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       - name: Push Images
         run: docker push ${{ vars.DOCKERHUB_USERNAME }}/entvscmd
+
+  ansible:
+    runs-on: ubuntu-latest
+    environment: ci/rabin-cicd
+    needs: docker_build_push
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up SSH key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_KEY }}" > ~/ansible_ssh_key
+          chmod 600 ~/ansible_ssh_key
+          ssh-keyscan github.com >> ~/.ssh/known_hosts
+
+      - name: Install Ansible
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y python3-pip
+          pip3 install ansible
+      - name: Ansible ssh connection check
+        run: ssh -o StrictHostKeyChecking=no -i ~/ansible_ssh_key deepak@${{ vars.ANSIBLE_NODE }}
+
+      - name: Deploy with Ansible
+        working-directory: ./scripts/IaC/Ansible
+        run: |
+          ansible-playbook -v -i ${{ vars.ANSIBLE_NODE }}, deploy.yml --private-key ~/ansible_ssh_key --user ubuntu
+        env:
+          ANSIBLE_HOST_KEY_CHECKING: 'False'
