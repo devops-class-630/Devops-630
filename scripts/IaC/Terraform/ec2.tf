@@ -9,9 +9,6 @@ terraform {
     encrypt        = true
   }
 }
-variable "Instance_name" {
- type = string
-}
 
 
 data "aws_ami" "ubuntu" {
@@ -35,7 +32,7 @@ ami           = data.aws_ami.ubuntu.id
 instance_type = "t3.micro"
 
 tags = {
-  Name = var.Instance_name
+  Name = "My-ec2-lab-machine"
 }
 }
 
