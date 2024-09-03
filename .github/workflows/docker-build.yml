@@ -50,6 +50,6 @@ jobs:
       - name: Deploy with Ansible
         working-directory: ./scripts/IaC/Ansible
         run: |
-          ansible-playbook -v -i ${{ vars.ANSIBLE_NODE }}, deploy.yml --private-key ~/ansible_ssh_key --user deepak
+          ansible-playbook -i ${{ vars.ANSIBLE_NODE }}, deploy.yml --private-key ~/ansible_ssh_key --user deepak
         env:
           ANSIBLE_HOST_KEY_CHECKING: 'False'

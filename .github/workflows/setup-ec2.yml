@@ -1,0 +1,51 @@
+name: Setup AWS Instance
+on:
+  workflow_dispatch:
+    inputs:
+      ubuntu_ssh_pub_key:
+        description: ubuntu-ssh-public-key
+        required: true
+        type: string
+      aws_access_key_id:
+        description: aws_access_key_id
+        required: true
+        type: string
+      aws_secret_access_key:
+        description: aws_secret_access_key 
+        type: string
+        required: true
+env:
+  TF_VAR_AWS_ACCESS_KEY_ID: "${{ github.event.inputs.aws_access_key_id }}"
+  TF_VAR_AWS_SECRET_ACCESS_KEY: "${{ github.event.inputs.aws_secret_access_key }}"
+  TF_VAR_root_ssh_pub_key:  "${{ github.event.inputs.ubuntu_ssh_pub_key }}"
+
+      
+jobs:
+  create-aws-instance:
+    runs-on: ubuntu-latest
+    permissions:
+      packages: write
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: "$TF_VAR_AWS_ACCESS_KEY_ID"
+          aws-secret-access-key: "$TF_VAR_AWS_SECRET_ACCESS_KEY"
+          aws-region: us-east-1
+      
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_wrapper: false
+      - name: Terraform Apply
+        working-directory: ./scripts/IaC/Terraform
+        id:   apply
+        run: |
+          terraform init
+          terraform validate
+          terraform plan
+          terraform apply -auto-approve
