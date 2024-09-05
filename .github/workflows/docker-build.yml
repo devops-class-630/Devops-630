@@ -13,17 +13,17 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
-      # - name: Docker build
-      #   run: |
-      #     echo "Building Docker images"
-      #     docker build -t ${{ vars.DOCKERHUB_USERNAME }}/dockerlab630 .
-      # - name: Login to Docker Hub
-      #   uses: docker/login-action@v3
-      #   with:
-      #     username: ${{ vars.DOCKERHUB_USERNAME }}
-      #     password: ${{ secrets.DOCKERHUB_TOKEN }}
-      # - name: Push Images
-      #   run: docker push ${{ vars.DOCKERHUB_USERNAME }}/dockerlab630
+      - name: Docker build
+        run: |
+          echo "Building Docker images"
+          docker build -t ${{ vars.DOCKERHUB_USERNAME }}/dockerlab630 .
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ vars.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Push Images
+        run: docker push ${{ vars.DOCKERHUB_USERNAME }}/dockerlab630
   deploy:
     runs-on: ubuntu-latest
     environment: cicd/deepak
@@ -32,12 +32,41 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: "${{ secret.AWS_ACCESS_KEY_ID }}"
+          aws-secret-access-key: "${{ secret.AWS_SECRET_ACCESS_KEY }}"
+          aws-region: us-east-1
+      
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_wrapper: false
+
+      - name: Terraform Apply
+        working-directory: ./scripts/IaC/Terraform
+        id:   apply
+        run: |
+          terraform init
+          terraform validate
+          terraform plan
+          terraform apply -auto-approve
+      - name: Get EC2 Public IP
+        id: get_ip
+        working-directory: ./scripts/IaC/Terraform
+        run: |
+          PUBLIC_IP=$(terraform output -raw instance_public_ip)
+          echo "ANSIBLE_NODE=${PUBLIC_IP}" >> $GITHUB_ENV
+
       - name: Set up SSH key
+        working-directory: ./scripts/IaC/Terraform
         run: |
           mkdir -p ~/.ssh
           echo "${{ secrets.SSH_KEY }}" > ~/ansible_ssh_key
           chmod 600 ~/ansible_ssh_key
           ssh-keyscan github.com >> ~/.ssh/known_hosts
+          ssh-keygen -y -f ~/ansible_ssh_key > ./id_rsa.pub
 
       - name: Install Ansible
         run: |
@@ -45,11 +74,11 @@ jobs:
           sudo apt-get install -y python3-pip
           pip3 install ansible
       - name: Ansible ssh connection check
-        run: ssh -o StrictHostKeyChecking=no -i ~/ansible_ssh_key deepak@${{ vars.ANSIBLE_NODE }}
+        run: ssh -o StrictHostKeyChecking=no -i ~/ansible_ssh_key ubuntu@${{ env.ANSIBLE_NODE }}
 
       - name: Deploy with Ansible
         working-directory: ./scripts/IaC/Ansible
         run: |
-          ansible-playbook -i ${{ vars.ANSIBLE_NODE }}, deploy.yml --private-key ~/ansible_ssh_key --user deepak
+          ansible-playbook -i ${{ vars.ANSIBLE_NODE }}, deploy.yml --private-key ~/ansible_ssh_key --user ubuntu
         env:
           ANSIBLE_HOST_KEY_CHECKING: 'False'
