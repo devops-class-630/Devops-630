@@ -1,14 +1,14 @@
 provider "aws" {
 region = "us-east-1"
 }
-#terraform {
-#  backend "s3" {
-#    bucket         = "devops630newworldlab"
-#    key            = "terraform.tfstate"
-#    region         = "us-east-1"
-#    encrypt        = true
-#  }
-#}
+terraform {
+  backend "s3" {
+    bucket         = "devops630newworldlab"
+    key            = "terraform.tfstate"
+    region         = "us-east-1"
+    encrypt        = true
+  }
+}
 
 
 data "aws_ami" "ubuntu" {
