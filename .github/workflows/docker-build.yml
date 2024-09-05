@@ -47,7 +47,7 @@ jobs:
         working-directory: ./scripts/IaC/Terraform
         run: |
           mkdir -p ~/.ssh
-          echo "${{ secrets.SSH_KEY }}" > ~/ansible_ssh_key
+          echo "${{ secrets.SSH_KEY }}" | base64 -d > ~/ansible_ssh_key
           chmod 600 ~/ansible_ssh_key
           ssh-keyscan github.com >> ~/.ssh/known_hosts
           ssh-keygen -y -f ~/ansible_ssh_key > ./id_rsa.pub
