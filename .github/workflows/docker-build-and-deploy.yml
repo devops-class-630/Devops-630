@@ -1,0 +1,55 @@
+name: "DOcker BUild and Deploy"
+
+on:
+  push:
+    branches:
+      - "ci/rabin-cicd"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    environment: "ci/rabin-cicd"
+    steps:
+      - name: checkout repository
+        uses: actions/checkout@v2
+      - name: Docker build
+        run: |
+          echo "BUild DOcker Images"
+          docker build -t rabindangolrd/entvscmd .
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with: 
+          username: ${{ vars.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Push Images
+        run: docker push ${{ vars.DOCKERHUB_USERNAME }}/entvscmd
+
+  ansible:
+    runs-on: ubuntu-latest
+    environment: ci/rabin-cicd
+    needs: build
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up SSH key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_KEY }}" > ~/ansible_ssh_key
+          chmod 600 ~/ansible_ssh_key
+          ssh-keyscan github.com >> ~/.ssh/known_hosts
+
+      - name: Install Ansible
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y python3-pip
+          pip3 install ansible
+      - name: Ansible ssh connection check
+        run: ssh -o StrictHostKeyChecking=no -i ~/ansible_ssh_key ubuntu@${{ vars.ANSIBLE_NODE }}
+
+      - name: Deploy with Ansible
+        working-directory: ./scripts/IaC/Ansible
+        run: |
+          ansible-playbook -v -i ${{ vars.ANSIBLE_NODE }}, deploy.yml --private-key ~/ansible_ssh_key --user ubuntu
+        env:
+          ANSIBLE_HOST_KEY_CHECKING: 'False'
