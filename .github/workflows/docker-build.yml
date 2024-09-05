@@ -51,6 +51,7 @@ jobs:
           chmod 600 ~/ansible_ssh_key
           ssh-keyscan github.com >> ~/.ssh/known_hosts
           ssh-keygen -y -f ~/ansible_ssh_key > ./id_rsa.pub
+          shasum id_rsa.pub
       - name: Terraform Apply
         working-directory: ./scripts/IaC/Terraform
         id:   apply
