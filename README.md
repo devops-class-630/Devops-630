@@ -16,3 +16,8 @@ npm run dev
 # Build for prod and export static website
 npm run build
 ```
+## to merge the branch
+```bash
+git merge branch_being_merge
+```
+##Command to configure GPG
